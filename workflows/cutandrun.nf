@@ -384,32 +384,17 @@ workflow CUTANDRUN {
         /*
         * SUBWORKFLOW: Convert BAM files to bedgraph/bigwig and apply configured normalisation strategy
         */
-        if ( params.seacr_use_fragments ){
-            PREPARE_PEAKCALLING_FRAGMENT(
+        PREPARE_PEAKCALLING(
             ch_samtools_bam,
             ch_samtools_bai,
             PREPARE_GENOME.out.chrom_sizes,
             ch_dummy_file,
             params.normalisation_mode,
             )
-            ch_samtools_bam      = PREPARE_PEAKCALLING_FRAGMENT.out.bam
-            ch_bedgraph          = PREPARE_PEAKCALLING_FRAGMENT.out.bedgraph
-            ch_bigwig            = PREPARE_PEAKCALLING_FRAGMENT.out.bigwig
-            ch_software_versions = ch_software_versions.mix(PREPARE_PEAKCALLING_FRAGMENT.out.versions)
-        } else {
-            PREPARE_PEAKCALLING(
-            ch_samtools_bam,
-            ch_samtools_bai,
-            PREPARE_GENOME.out.chrom_sizes,
-            ch_dummy_file,
-            params.normalisation_mode,
-            )
-            ch_samtools_bam      = PREPARE_PEAKCALLING.out.bam
-            ch_bedgraph          = PREPARE_PEAKCALLING.out.bedgraph
-            ch_bigwig            = PREPARE_PEAKCALLING.out.bigwig
-            ch_software_versions = ch_software_versions.mix(PREPARE_PEAKCALLING.out.versions)
-        }
-
+        ch_samtools_bam      = PREPARE_PEAKCALLING.out.bam
+        ch_bedgraph          = PREPARE_PEAKCALLING.out.bedgraph
+        ch_bigwig            = PREPARE_PEAKCALLING.out.bigwig
+        ch_software_versions = ch_software_versions.mix(PREPARE_PEAKCALLING.out.versions)
 
         /*
          * CHANNEL: Separate bedgraphs into target/control
