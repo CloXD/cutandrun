@@ -143,7 +143,6 @@ include { MARK_DUPLICATES_PICARD                       } from "../subworkflows/n
 include { MARK_DUPLICATES_PICARD as DEDUPLICATE_PICARD } from "../subworkflows/nf-core/mark_duplicates_picard"
 include { SAMTOOLS_VIEW_SORT_STATS                     } from "../subworkflows/nf-core/samtools_view_sort_stats"
 include { PREPARE_PEAKCALLING                          } from "../subworkflows/nf-core/prepare_peakcalling"
-include { PREPARE_PEAKCALLING_FRAGMENT                          } from "../subworkflows/nf-core/prepare_peakcalling_fragment"
 
 /*
 ========================================================================================
