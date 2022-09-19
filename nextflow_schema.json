@@ -340,6 +340,12 @@
                     "description": "SEACR stringency.",
                     "enum": ["stringent", "relaxed"]
                 },
+                "seacr_use_fragments":{
+                    "type" : "boolean",
+                    "default": true,
+                    "fa_icon" : "fas fa-align-justify",
+                    "description": "Use the density across read pairs rather than individual reads."
+                },
                 "use_control": {
                     "type": "boolean",
                     "default": true,

@@ -143,6 +143,7 @@ include { MARK_DUPLICATES_PICARD                       } from "../subworkflows/n
 include { MARK_DUPLICATES_PICARD as DEDUPLICATE_PICARD } from "../subworkflows/nf-core/mark_duplicates_picard"
 include { SAMTOOLS_VIEW_SORT_STATS                     } from "../subworkflows/nf-core/samtools_view_sort_stats"
 include { PREPARE_PEAKCALLING                          } from "../subworkflows/nf-core/prepare_peakcalling"
+include { PREPARE_PEAKCALLING_FRAGMENT                          } from "../subworkflows/nf-core/prepare_peakcalling_fragment"
 
 /*
 ========================================================================================
@@ -383,17 +384,32 @@ workflow CUTANDRUN {
         /*
         * SUBWORKFLOW: Convert BAM files to bedgraph/bigwig and apply configured normalisation strategy
         */
-        PREPARE_PEAKCALLING(
+        if ( params.seacr_use_fragments ){
+            PREPARE_PEAKCALLING_FRAGMENT(
             ch_samtools_bam,
             ch_samtools_bai,
             PREPARE_GENOME.out.chrom_sizes,
             ch_dummy_file,
             params.normalisation_mode,
-        )
-        ch_samtools_bam      = PREPARE_PEAKCALLING.out.bam
-        ch_bedgraph          = PREPARE_PEAKCALLING.out.bedgraph
-        ch_bigwig            = PREPARE_PEAKCALLING.out.bigwig
-        ch_software_versions = ch_software_versions.mix(ANNOTATE_DEDUP_META.out.versions)
+            )
+            ch_samtools_bam      = PREPARE_PEAKCALLING_FRAGMENT.out.bam
+            ch_bedgraph          = PREPARE_PEAKCALLING_FRAGMENT.out.bedgraph
+            ch_bigwig            = PREPARE_PEAKCALLING_FRAGMENT.out.bigwig
+            ch_software_versions = ch_software_versions.mix(PREPARE_PEAKCALLING_FRAGMENT.out.versions)
+        } else {
+            PREPARE_PEAKCALLING(
+            ch_samtools_bam,
+            ch_samtools_bai,
+            PREPARE_GENOME.out.chrom_sizes,
+            ch_dummy_file,
+            params.normalisation_mode,
+            )
+            ch_samtools_bam      = PREPARE_PEAKCALLING.out.bam
+            ch_bedgraph          = PREPARE_PEAKCALLING.out.bedgraph
+            ch_bigwig            = PREPARE_PEAKCALLING.out.bigwig
+            ch_software_versions = ch_software_versions.mix(PREPARE_PEAKCALLING.out.versions)
+        }
+
 
         /*
          * CHANNEL: Separate bedgraphs into target/control
@@ -812,7 +828,7 @@ workflow CUTANDRUN {
             ch_samtools_bam = ANNOTATE_FRIP_META.out.output
             //ch_samtools_bam | view
         }
-       
+
         /*
         * MODULE: Trim unwanted columns for downstream reporting
         */
