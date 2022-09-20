@@ -340,7 +340,7 @@
                     "description": "SEACR stringency.",
                     "enum": ["stringent", "relaxed"]
                 },
-                "seacr_use_fragments":{
+                "use_fragments":{
                     "type" : "boolean",
                     "default": true,
                     "fa_icon" : "fas fa-align-justify",
